@@ -15,6 +15,8 @@ npm run build    # static output in dist/
 | Experience & skills | `src/data/profile.ts` |
 | Portfolio projects | `src/content/projects/*.md` — copy `_example.md` without the `_` |
 | Particle hero (shaders) | `src/components/ParticleField.tsx` |
+| Page sections | `src/components/sections/` |
+| Reusable UI (Button, Tag, Section, SpotlightCard…) | `src/components/ui/` |
 | Scroll animations | `src/scripts/motion.ts` |
 | Colors / fonts (Geist) | `src/styles/global.css` |
 | Résumé PDFs | `public/Jesus-Soares-Resume.pdf`, `public/Jesus-Soares-CV.pdf` |
