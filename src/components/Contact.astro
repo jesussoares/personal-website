@@ -1,0 +1,64 @@
+---
+import { t, type Lang } from '../i18n/ui';
+import { profile } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = t(lang).contact;
+const year = new Date().getFullYear();
+---
+
+<footer id="contact" class="mx-auto max-w-6xl px-4 pb-6 sm:px-8">
+  <div class="relative overflow-hidden rounded-[2rem] bg-surface px-7 py-20 md:px-16 md:py-28" data-reveal>
+    <div
+      class="pointer-events-none absolute -right-40 -bottom-48 size-[36rem] opacity-25"
+      style="background: radial-gradient(closest-side, var(--accent-b), color-mix(in srgb, var(--accent-a) 40%, transparent) 55%, transparent)"
+      aria-hidden="true"
+    >
+    </div>
+
+    <p class="relative flex items-center gap-2 font-mono text-xs tracking-wider text-muted uppercase">
+      <span class="size-1.5 rounded-full bg-gradient-to-r from-accent-a to-accent-b"></span>
+      {copy.label}
+    </p>
+    <h2 class="relative mt-4 max-w-3xl text-4xl leading-[1.05] font-medium tracking-[-0.035em] text-ink md:text-6xl">
+      {copy.title}
+    </h2>
+    <p class="relative mt-5 max-w-lg text-muted md:text-lg">{copy.text}</p>
+
+    <div class="relative mt-10 flex flex-wrap items-center gap-3">
+      <a
+        href={`mailto:${profile.email}`}
+        class="rounded-full bg-ink px-6 py-3 text-sm font-medium break-all text-white transition-opacity hover:opacity-85"
+      >
+        {profile.email}
+      </a>
+      <button
+        type="button"
+        data-copy-email={profile.email}
+        data-copied-label={copy.copied}
+        class="rounded-full bg-white px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-surface-strong"
+      >
+        {copy.copy}
+      </button>
+      <a
+        href={profile.resume[lang]}
+        download
+        class="rounded-full bg-white px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-surface-strong"
+      >
+        {copy.resume}
+      </a>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-col gap-3 px-2 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} {profile.name} · {copy.location}</p>
+    <div class="flex gap-5">
+      <a href={profile.links.linkedin} target="_blank" rel="noopener" class="transition-colors hover:text-ink">LinkedIn ↗</a>
+      <a href={profile.links.github} target="_blank" rel="noopener" class="transition-colors hover:text-ink">GitHub ↗</a>
+    </div>
+  </div>
+</footer>
