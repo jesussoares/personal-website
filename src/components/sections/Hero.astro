@@ -15,7 +15,8 @@ const copy = t(lang).hero;
 
 <section id="hero" class="relative h-[160vh]">
   <div class="sticky top-0 h-svh overflow-hidden">
-    <div class="absolute inset-0">
+    <!-- The top edge fades out so the nav sits on a clean background without needing a blur -->
+    <div class="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent_0,#000_150px)]">
       <ParticleField client:only="react" />
     </div>
 

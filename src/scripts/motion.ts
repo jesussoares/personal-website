@@ -6,18 +6,70 @@ gsap.registerPlugin(ScrollTrigger);
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Floating nav gets a background once we scroll ---------- */
+/* ---------- Nav ---------- */
+const header = document.querySelector<HTMLElement>('[data-nav-header]');
 const nav = document.querySelector<HTMLElement>('[data-nav]');
-if (nav) {
+const hero = document.getElementById('hero');
+
+if (header && nav) {
+  const setFlag = (el: HTMLElement, name: string, on: boolean) => el.toggleAttribute(`data-${name}`, on);
+
+  // Transparent over the hero, a solid pill afterwards (solid, not backdrop-blur: blurring the live canvas is expensive)
   ScrollTrigger.create({
-    start: 'top -40',
-    onToggle: ({ isActive }) => {
-      // Solid instead of backdrop-blur: blurring the live WebGL canvas behind it every frame is expensive
-      nav.classList.toggle('bg-white/90', isActive);
-      nav.classList.toggle('border-line', isActive);
-      nav.classList.toggle('shadow-[0_8px_30px_rgba(0,0,0,0.04)]', isActive);
+    trigger: hero ?? document.body,
+    start: 'bottom 80px',
+    end: 'max',
+    onToggle: ({ isActive }) => setFlag(nav, 'solid', isActive),
+  });
+
+  // Past the hero: hide while scrolling down, reveal on the way up
+  ScrollTrigger.create({
+    start: 0,
+    end: 'max',
+    onUpdate: (self) => {
+      const pastHero = !hero || self.scroll() > hero.offsetHeight;
+      setFlag(header, 'hidden', pastHero && self.direction === 1);
     },
   });
+  header.addEventListener('focusin', () => setFlag(header, 'hidden', false));
+}
+
+/* ---------- Nav indicator: follows the section in view, and the hovered link ---------- */
+const linkList = document.querySelector<HTMLElement>('[data-nav-links]');
+const indicator = document.querySelector<HTMLElement>('[data-nav-indicator]');
+if (linkList && indicator) {
+  const links = [...linkList.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
+  let active: HTMLAnchorElement | null = null;
+
+  const moveTo = (link: HTMLAnchorElement | null) => {
+    indicator.style.opacity = link ? '1' : '0';
+    if (!link) return;
+    const list = linkList.getBoundingClientRect();
+    const box = link.getBoundingClientRect();
+    indicator.style.left = `${box.left - list.left}px`;
+    indicator.style.width = `${box.width}px`;
+  };
+  const setActive = (link: HTMLAnchorElement | null) => {
+    active = link;
+    links.forEach((l) => l.toggleAttribute('data-active', l === link));
+    moveTo(link);
+  };
+
+  links.forEach((link) => {
+    link.addEventListener('pointerenter', () => moveTo(link));
+    const section = document.querySelector(link.hash);
+    if (!section) return;
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 50%',
+      end: 'bottom 50%',
+      onToggle: ({ isActive }) => {
+        if (isActive) setActive(link);
+        else if (active === link) setActive(null);
+      },
+    });
+  });
+  linkList.addEventListener('pointerleave', () => moveTo(active));
 }
 
 /* ---------- Cursor-following glow on cards ---------- */
