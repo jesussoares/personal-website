@@ -1,0 +1,71 @@
+---
+import ParticleField from './ParticleField.tsx';
+import { t, type Lang } from '../i18n/ui';
+import { profile } from '../data/profile';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = t(lang).hero;
+---
+
+<section id="hero" class="relative h-[260vh]">
+  <div class="sticky top-0 h-svh overflow-hidden">
+    <div class="absolute inset-0">
+      <ParticleField client:only="react" />
+    </div>
+
+    <!-- Stage 0: headline -->
+    <div class="hero-stage pointer-events-none absolute inset-0 flex items-center justify-center px-4" data-stage="0">
+      <div class="pointer-events-auto max-w-4xl text-center">
+        <p
+          class="inline-flex items-center gap-2 rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-xs text-muted backdrop-blur"
+          data-hero-in
+        >
+          <span class="size-1.5 rounded-full bg-gradient-to-r from-accent-a to-accent-b"></span>
+          {copy.eyebrow}
+        </p>
+        <h1 class="mt-7 text-[clamp(2.6rem,7vw,5.75rem)] leading-[1.02] font-medium tracking-[-0.04em] text-ink" data-hero-in>
+          {copy.title}{" "}
+          <span class="text-gradient">{copy.titleAccent}</span>
+        </h1>
+        <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg" data-hero-in>
+          {copy.tagline}
+        </p>
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-3" data-hero-in>
+          <a href="#contact" class="rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85">
+            {copy.ctaPrimary}
+          </a>
+          <a
+            href="#experience"
+            class="rounded-full bg-surface px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-surface-strong"
+          >
+            {copy.ctaSecondary}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 1: caption under the particle initials -->
+    <div class="hero-stage absolute inset-x-0 bottom-[14%] text-center" data-stage="1">
+      <p class="text-2xl font-medium tracking-tight text-ink md:text-3xl">{profile.name}</p>
+      <p class="mt-1 text-sm text-muted">{copy.role}</p>
+    </div>
+
+    <div data-scroll-hint class="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-muted">
+      <span class="font-mono text-[11px] tracking-widest uppercase">{copy.scroll}</span>
+      <span class="relative block h-10 w-px overflow-hidden bg-line">
+        <span class="absolute inset-x-0 top-0 h-1/2 animate-[scrollhint_2s_ease-in-out_infinite] bg-gradient-to-b from-accent-a to-accent-b"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes scrollhint {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+  }
+</style>
