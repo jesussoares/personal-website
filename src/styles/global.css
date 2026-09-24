@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ---------- Design tokens ---------- */
+:root {
+  --bg: #ffffff;
+  --surface: #f5f6f8;       /* cards */
+  --surface-strong: #eceef2;
+  --ink: #0b0b0f;
+  --muted: #5f6368;
+  --line: #e7e8ec;
+  --accent-a: #4f7cff;      /* particle gradient: blue → violet */
+  --accent-b: #8b5cf6;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent-a: var(--accent-a);
+  --color-accent-b: var(--accent-b);
+
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+}
+
+/* ---------- Base ---------- */
+html {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent-a) 20%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-a);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Hero stages ---------- */
+.js .hero-stage[data-stage="1"] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------- Reveal ---------- */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Hero collapses to a single static screen */
+  #hero {
+    height: 100svh !important;
+  }
+  [data-scroll-hint] {
+    display: none;
+  }
+}
