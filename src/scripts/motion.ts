@@ -6,14 +6,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* ---------- Floating nav turns into a glass pill once we scroll ---------- */
+/* ---------- Floating nav gets a background once we scroll ---------- */
 const nav = document.querySelector<HTMLElement>('[data-nav]');
 if (nav) {
   ScrollTrigger.create({
     start: 'top -40',
     onToggle: ({ isActive }) => {
-      nav.classList.toggle('bg-white/75', isActive);
-      nav.classList.toggle('backdrop-blur-xl', isActive);
+      // Solid instead of backdrop-blur: blurring the live WebGL canvas behind it every frame is expensive
+      nav.classList.toggle('bg-white/90', isActive);
       nav.classList.toggle('border-line', isActive);
       nav.classList.toggle('shadow-[0_8px_30px_rgba(0,0,0,0.04)]', isActive);
     },
@@ -53,14 +53,28 @@ if (!reduceMotion) {
   /* ---------- Hero scrollytelling (particles are driven from the same scroll range) ---------- */
   gsap
     .timeline({
-      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: 0.5 },
+      scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: 0.3 },
       defaults: { ease: 'power2.inOut' },
     })
-    .to('[data-stage="0"]', { autoAlpha: 0, y: -40, filter: 'blur(8px)', duration: 0.2 }, 0.04)
-    .to('[data-scroll-hint]', { autoAlpha: 0, duration: 0.08 }, 0)
-    .fromTo('[data-stage="1"]', { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.12 }, 0.4)
-    .to('[data-stage="1"]', { autoAlpha: 0, y: -20, duration: 0.1 }, 0.7)
-    .to({}, { duration: 0.2 }, 0.8);
+    // transform/opacity only: animating filter on full-screen layers over the canvas tanks the frame rate
+    .to('[data-stage="0"]', { autoAlpha: 0, y: -40, duration: 0.3 }, 0)
+    .to('[data-scroll-hint]', { autoAlpha: 0, duration: 0.1 }, 0)
+    .fromTo('[data-stage="1"]', { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.2 }, 0.55)
+    .to({}, { duration: 0.25 }, 0.75);
+
+  // Once the pin releases, the caption fades out while the particles disperse.
+  // Targets the inner wrapper so it never overwrites the pinned timeline's fade-in.
+  gsap.fromTo(
+    '[data-stage-exit]',
+    { autoAlpha: 1, y: 0 },
+    {
+      autoAlpha: 0,
+      y: -30,
+      ease: 'none',
+      immediateRender: false,
+      scrollTrigger: { trigger: '#hero', start: 'bottom bottom', end: 'bottom 70%', scrub: 0.3 },
+    },
+  );
 
   /* ---------- Section reveals ---------- */
   ScrollTrigger.batch('[data-reveal]', {

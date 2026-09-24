@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const copy = t(lang).hero;
 ---
 
-<section id="hero" class="relative h-[260vh]">
+<section id="hero" class="relative h-[160vh]">
   <div class="sticky top-0 h-svh overflow-hidden">
     <div class="absolute inset-0">
       <ParticleField client:only="react" />
@@ -49,9 +49,12 @@ const copy = t(lang).hero;
     </div>
 
     <!-- Stage 1: caption under the particle initials -->
+    <!-- Outer element fades in with the initials, inner one fades out on exit (separate so the tweens don't fight) -->
     <div class="hero-stage absolute inset-x-0 bottom-[14%] text-center" data-stage="1">
-      <p class="text-2xl font-medium tracking-tight text-ink md:text-3xl">{profile.name}</p>
-      <p class="mt-1 text-sm text-muted">{copy.role}</p>
+      <div data-stage-exit>
+        <p class="text-2xl font-medium tracking-tight text-ink md:text-3xl">{profile.name}</p>
+        <p class="mt-1 text-sm text-muted">{copy.role}</p>
+      </div>
     </div>
 
     <div data-scroll-hint class="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-muted">

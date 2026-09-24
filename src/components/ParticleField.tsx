@@ -199,7 +199,10 @@ function glyphAtlas() {
 /* ---------- Scene ---------- */
 
 interface Driver {
+  /** 0→1 while the hero is pinned (headline → initials) */
   progress: number;
+  /** 0→1 as the unpinned hero scrolls away (initials disperse) */
+  exit: number;
   pointer: { x: number; y: number; active: boolean };
 }
 
@@ -295,13 +298,13 @@ function Particles({ driver, animate }: { driver: React.RefObject<Driver>; anima
   useFrame(({ clock }, delta) => {
     const s = smooth.current;
     const dt = Math.min(delta, 0.1);
-    const { progress, pointer } = driver.current;
+    const { progress, exit, pointer } = driver.current;
     const t = clock.elapsedTime;
 
-    const morphTarget = THREE.MathUtils.smoothstep(progress, 0.12, 0.45);
-    const disperseTarget = THREE.MathUtils.smoothstep(progress, 0.68, 0.98);
-    s.morph = THREE.MathUtils.damp(s.morph, morphTarget, 5, dt);
-    s.disperse = THREE.MathUtils.damp(s.disperse, disperseTarget, 5, dt);
+    const morphTarget = THREE.MathUtils.smoothstep(progress, 0.15, 0.7);
+    const disperseTarget = THREE.MathUtils.smoothstep(exit, 0, 0.7);
+    s.morph = THREE.MathUtils.damp(s.morph, morphTarget, 9, dt);
+    s.disperse = THREE.MathUtils.damp(s.disperse, disperseTarget, 9, dt);
 
     // Until the user moves the mouse (or on touch), a "ghost" light wanders slowly
     const tx = pointer.active ? pointer.x : Math.sin(t * 0.4) * dims.w * 0.3;
@@ -325,7 +328,7 @@ function Particles({ driver, animate }: { driver: React.RefObject<Driver>; anima
 }
 
 export default function ParticleField() {
-  const driver = useRef<Driver>({ progress: 0, pointer: { x: 0, y: 0, active: false } });
+  const driver = useRef<Driver>({ progress: 0, exit: 0, pointer: { x: 0, y: 0, active: false } });
   const [visible, setVisible] = useState(true);
   const [ready, setReady] = useState(false);
   const reduceMotion = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
@@ -344,6 +347,12 @@ export default function ParticleField() {
       end: 'bottom bottom',
       onUpdate: (self) => (driver.current.progress = self.progress),
     });
+    const exitTrigger = ScrollTrigger.create({
+      trigger: hero,
+      start: 'bottom bottom',
+      end: 'bottom top',
+      onUpdate: (self) => (driver.current.exit = self.progress),
+    });
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
@@ -359,6 +368,7 @@ export default function ParticleField() {
     return () => {
       io.disconnect();
       trigger.kill();
+      exitTrigger.kill();
       window.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('pointerleave', onLeave);
     };
@@ -371,7 +381,7 @@ export default function ParticleField() {
       className="transition-opacity duration-1000"
       style={{ opacity: ready ? 1 : 0 }}
       frameloop={!visible ? 'never' : reduceMotion ? 'demand' : 'always'}
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
       onCreated={() => setReady(true)}
       fallback={null}
