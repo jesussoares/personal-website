@@ -1,0 +1,36 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import RoadmapItem from './RoadmapItem.astro';
+import { t, type Lang } from '../../i18n/ui';
+import { roles } from '../../data/profile';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = t(lang).experience;
+---
+
+<Section id="experience" padding="pt-16 pb-28 md:pt-20 md:pb-40">
+  <SectionHeading label={copy.label} title={copy.title} />
+
+  <!-- Roadmap: dashed track with a gradient fill driven by scroll; nodes light up when the fill reaches them -->
+  <ol class="relative" data-roadmap>
+    <div class="roadmap-track absolute top-2 bottom-2 left-[11px] w-px md:left-1/2" aria-hidden="true">
+      <div
+        class="absolute inset-y-0 left-1/2 w-[3px] -translate-x-1/2 origin-top bg-gradient-to-b from-accent-a to-accent-b opacity-50 blur-[3px]"
+        data-roadmap-fill
+      >
+      </div>
+      <div
+        class="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 origin-top rounded-full bg-gradient-to-b from-accent-a to-accent-b"
+        data-roadmap-fill
+      >
+      </div>
+    </div>
+
+    {roles.map((role, i) => <RoadmapItem role={role} lang={lang} cardRight={i % 2 === 0} />)}
+  </ol>
+</Section>

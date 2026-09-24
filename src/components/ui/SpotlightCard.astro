@@ -1,0 +1,30 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'> & {
+  /** Classes for the inner white panel (padding etc.) */
+  innerClass?: string;
+};
+
+const { class: className, innerClass = 'p-7 md:p-8', ...rest } = Astro.props;
+---
+
+<!--
+  The 1px wrapper acts as the border. On hover a gradient follows the cursor (--mx/--my are set by
+  scripts/motion.ts for every [data-spotlight]) and lights the border up, plus a faint inner glow.
+-->
+<div class:list={['group/card relative rounded-3xl bg-line p-px', className]} data-spotlight {...rest}>
+  <div
+    class="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+    style="background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), var(--accent-a), var(--accent-b) 30%, transparent 70%)"
+  >
+  </div>
+  <div class:list={['relative overflow-hidden rounded-[calc(1.5rem-1px)] bg-white', innerClass]}>
+    <div
+      class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100"
+      style="background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--accent-a) 6%, transparent), transparent 60%)"
+    >
+    </div>
+    <div class="relative"><slot /></div>
+  </div>
+</div>

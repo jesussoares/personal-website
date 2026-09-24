@@ -1,7 +1,9 @@
 ---
-import ParticleField from './ParticleField.tsx';
-import { t, type Lang } from '../i18n/ui';
-import { profile } from '../data/profile';
+import ParticleField from '../ParticleField.tsx';
+import Button from '../ui/Button.astro';
+import GradientDot from '../ui/GradientDot.astro';
+import { t, type Lang } from '../../i18n/ui';
+import { profile } from '../../data/profile';
 
 interface Props {
   lang: Lang;
@@ -24,7 +26,7 @@ const copy = t(lang).hero;
           class="inline-flex items-center gap-2 rounded-full border border-line bg-white/70 px-3.5 py-1.5 text-xs text-muted backdrop-blur"
           data-hero-in
         >
-          <span class="size-1.5 rounded-full bg-gradient-to-r from-accent-a to-accent-b"></span>
+          <GradientDot />
           {copy.eyebrow}
         </p>
         <h1 class="mt-7 text-[clamp(2.6rem,7vw,5.75rem)] leading-[1.02] font-medium tracking-[-0.04em] text-ink" data-hero-in>
@@ -35,15 +37,8 @@ const copy = t(lang).hero;
           {copy.tagline}
         </p>
         <div class="mt-9 flex flex-wrap items-center justify-center gap-3" data-hero-in>
-          <a href="#contact" class="rounded-full bg-ink px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-85">
-            {copy.ctaPrimary}
-          </a>
-          <a
-            href="#experience"
-            class="rounded-full bg-surface px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-surface-strong"
-          >
-            {copy.ctaSecondary}
-          </a>
+          <Button href="#contact">{copy.ctaPrimary}</Button>
+          <Button href="#experience" variant="secondary">{copy.ctaSecondary}</Button>
         </div>
       </div>
     </div>

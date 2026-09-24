@@ -1,0 +1,23 @@
+---
+import GradientDot from './GradientDot.astro';
+
+interface Props {
+  label: string;
+  title: string;
+  description?: string;
+  /** Animate in on scroll; turn off when a parent already reveals */
+  reveal?: boolean;
+  class?: string;
+}
+
+const { label, title, description, reveal = true, class: className = 'mb-12 md:mb-16' } = Astro.props;
+---
+
+<div class={className} data-reveal={reveal ? '' : undefined}>
+  <p class="flex items-center gap-2 font-mono text-xs tracking-wider text-muted uppercase">
+    <GradientDot />
+    {label}
+  </p>
+  <h2 class="mt-4 max-w-3xl text-4xl leading-[1.05] font-medium tracking-[-0.035em] text-ink md:text-6xl">{title}</h2>
+  {description && <p class="mt-5 max-w-lg text-muted md:text-lg">{description}</p>}
+</div>

@@ -1,0 +1,15 @@
+---
+interface Props {
+  id?: string;
+  as?: 'section' | 'footer';
+  /** Vertical padding; defaults to the standard section rhythm */
+  padding?: string;
+  class?: string;
+}
+
+const { id, as: Tag = 'section', padding = 'py-28 md:py-40', class: className } = Astro.props;
+---
+
+<Tag id={id} class:list={['mx-auto max-w-6xl px-4 sm:px-8', padding, className]}>
+  <slot />
+</Tag>

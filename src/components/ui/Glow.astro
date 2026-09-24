@@ -1,0 +1,19 @@
+---
+interface Props {
+  /** Position and size, e.g. "-top-40 left-1/2 size-[28rem] -translate-x-1/2" */
+  class: string;
+  /** Violet-centred instead of blue-centred */
+  reverse?: boolean;
+}
+
+const { class: className, reverse = false } = Astro.props;
+const [inner, outer] = reverse ? ['--accent-b', '--accent-a'] : ['--accent-a', '--accent-b'];
+---
+
+<!-- Soft decorative radial glow; the parent needs `relative overflow-hidden` -->
+<div
+  class:list={['pointer-events-none absolute opacity-25', className]}
+  style={`background: radial-gradient(closest-side, var(${inner}), color-mix(in srgb, var(${outer}) 40%, transparent) 55%, transparent)`}
+  aria-hidden="true"
+>
+</div>

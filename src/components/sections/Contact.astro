@@ -1,0 +1,50 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Button from '../ui/Button.astro';
+import Glow from '../ui/Glow.astro';
+import { t, type Lang } from '../../i18n/ui';
+import { profile } from '../../data/profile';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = t(lang).contact;
+const year = new Date().getFullYear();
+const socials = [
+  { label: 'LinkedIn', href: profile.links.linkedin },
+  { label: 'GitHub', href: profile.links.github },
+];
+---
+
+<Section id="contact" as="footer" padding="pb-6">
+  <div class="relative overflow-hidden rounded-[2rem] bg-surface px-7 py-20 md:px-16 md:py-28" data-reveal>
+    <Glow class="-right-40 -bottom-48 size-[36rem]" reverse />
+    <div class="relative">
+      <SectionHeading label={copy.label} title={copy.title} description={copy.text} reveal={false} class="" />
+
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <Button href={`mailto:${profile.email}`} class="break-all">{profile.email}</Button>
+        <Button variant="subtle" data-copy-email={profile.email} data-copied-label={copy.copied}>
+          {copy.copy}
+        </Button>
+        <Button href={profile.resume[lang]} variant="subtle" download>{copy.resume}</Button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 flex flex-col gap-3 px-2 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+    <p>© {year} {profile.name} · {copy.location}</p>
+    <div class="flex gap-5">
+      {
+        socials.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener" class="transition-colors hover:text-ink">
+            {s.label} ↗
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</Section>

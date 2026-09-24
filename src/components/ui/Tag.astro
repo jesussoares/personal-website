@@ -1,0 +1,23 @@
+---
+type Variant = 'solid' | 'outline';
+
+interface Props {
+  /** solid: white pill for gray surfaces · outline: bordered mono label */
+  variant?: Variant;
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { variant = 'solid', size = 'sm', class: className } = Astro.props;
+
+const variants: Record<Variant, string> = {
+  solid: 'bg-white text-ink/80',
+  outline: 'border border-line font-mono text-muted',
+};
+const sizes = {
+  sm: 'px-3 py-1 text-xs',
+  md: 'px-3.5 py-1.5 text-sm',
+};
+---
+
+<li class:list={['rounded-full', variants[variant], sizes[size], className]}><slot /></li>

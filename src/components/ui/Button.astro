@@ -1,0 +1,47 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Variant = 'primary' | 'secondary' | 'subtle';
+type Size = 'sm' | 'md';
+
+type Props = (HTMLAttributes<'a'> | HTMLAttributes<'button'>) & {
+  href?: string;
+  /** primary: solid ink · secondary: gray on white backgrounds · subtle: white on gray surfaces */
+  variant?: Variant;
+  size?: Size;
+  /** Opens in a new tab and appends ↗ */
+  external?: boolean;
+};
+
+const { href, variant = 'primary', size = 'md', external = false, class: className, ...rest } = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary: 'bg-ink text-white hover:opacity-85',
+  secondary: 'bg-surface text-ink hover:bg-surface-strong',
+  subtle: 'bg-white text-ink hover:bg-surface-strong',
+};
+const sizes: Record<Size, string> = {
+  sm: 'px-4 py-2',
+  md: 'px-6 py-3',
+};
+const classes = [
+  'inline-flex items-center justify-center gap-1.5 rounded-full text-sm font-medium transition-[opacity,background-color]',
+  variants[variant],
+  sizes[size],
+  className,
+];
+const externalAttrs = external ? { target: '_blank', rel: 'noopener' } : {};
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} {...externalAttrs} {...(rest as HTMLAttributes<'a'>)}>
+      <slot />
+      {external && <span aria-hidden="true">↗</span>}
+    </a>
+  ) : (
+    <button type="button" class:list={classes} {...(rest as HTMLAttributes<'button'>)}>
+      <slot />
+    </button>
+  )
+}

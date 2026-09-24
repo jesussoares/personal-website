@@ -1,0 +1,69 @@
+---
+import SpotlightCard from '../ui/SpotlightCard.astro';
+import Tag from '../ui/Tag.astro';
+import type { Lang } from '../../i18n/ui';
+import type { Role } from '../../data/profile';
+
+interface Props {
+  role: Role;
+  lang: Lang;
+  /** Card on the right of the line (desktop); the date goes on the opposite side */
+  cardRight: boolean;
+}
+
+const { role: v, lang, cardRight } = Astro.props;
+---
+
+<!-- `data-active` is toggled by scripts/motion.ts when the roadmap fill reaches this item -->
+<li class="group relative grid pb-16 pl-10 last:pb-0 md:grid-cols-2 md:gap-20 md:pl-0" data-roadmap-item>
+  <!-- Node -->
+  <span
+    class="absolute top-7 left-0 grid size-[23px] place-items-center rounded-full border border-line bg-white transition-colors duration-500 group-data-[active]:border-accent-a md:left-1/2 md:-translate-x-1/2"
+    aria-hidden="true"
+  >
+    <span class="absolute inset-0 rounded-full border border-accent-a opacity-0 group-data-[active]:animate-[node-burst_0.9s_ease-out]"
+    ></span>
+    <span
+      class="size-2 rounded-full bg-line transition-all duration-500 group-data-[active]:scale-125 group-data-[active]:bg-gradient-to-br group-data-[active]:from-accent-a group-data-[active]:to-accent-b"
+    ></span>
+  </span>
+
+  <!-- Date side (desktop) -->
+  <div class:list={['hidden pt-6 md:block', cardRight ? 'text-right' : 'md:order-2']}>
+    <p class="font-mono text-sm text-ink">{v.period[lang]}</p>
+    <p class="mt-1 text-sm text-muted">{v.place[lang]}</p>
+  </div>
+
+  <SpotlightCard
+    class:list={[
+      'transition-[background-color,box-shadow] duration-500 group-data-[active]:bg-accent-a/25 group-data-[active]:shadow-[0_16px_50px_-12px_rgba(79,124,255,0.18)]',
+      !cardRight && 'md:order-1',
+    ]}
+    data-roadmap-card
+    data-side={cardRight ? 'right' : 'left'}
+  >
+    <p class="mb-2 font-mono text-xs text-muted md:hidden">{v.period[lang]} · {v.place[lang]}</p>
+    <h3 class="text-xl font-medium tracking-tight text-ink md:text-2xl">{v.company}</h3>
+    <p class="mt-0.5 text-sm text-muted">{v.role[lang]}</p>
+
+    <ul class="mt-6 space-y-2.5">
+      {
+        v.points[lang].map((point) => (
+          <li class="relative pl-5 text-[15px] leading-relaxed text-ink/80 before:absolute before:top-[0.65em] before:left-0 before:size-1.5 before:rounded-full before:bg-gradient-to-br before:from-accent-a before:to-accent-b before:opacity-60">
+            {point}
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      v.tags && (
+        <ul class="mt-6 flex flex-wrap gap-2 border-t border-line pt-5">
+          {v.tags.map((tag) => (
+            <Tag variant="outline">{tag}</Tag>
+          ))}
+        </ul>
+      )
+    }
+  </SpotlightCard>
+</li>
