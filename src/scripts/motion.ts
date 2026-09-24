@@ -20,6 +20,15 @@ if (nav) {
   });
 }
 
+/* ---------- Cursor-following glow on cards ---------- */
+document.querySelectorAll<HTMLElement>('[data-spotlight]').forEach((el) => {
+  el.addEventListener('pointermove', (e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    el.style.setProperty('--my', `${e.clientY - r.top}px`);
+  });
+});
+
 /* ---------- Copy email ---------- */
 document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((button) => {
   const original = button.textContent;
@@ -75,6 +84,40 @@ if (!reduceMotion) {
       scrollTrigger: { trigger: '#hero', start: 'bottom bottom', end: 'bottom 70%', scrub: 0.3 },
     },
   );
+
+  /* ---------- Experience roadmap ---------- */
+  // The line fills as the list scrolls past the 60% mark; each node lights up once the fill reaches it
+  gsap.to('[data-roadmap-fill]', {
+    scaleY: 1,
+    ease: 'none',
+    scrollTrigger: { trigger: '[data-roadmap]', start: 'top 60%', end: 'bottom 60%', scrub: 0.3 },
+  });
+
+  const desktop = window.matchMedia('(min-width: 768px)');
+  document.querySelectorAll<HTMLElement>('[data-roadmap-item]').forEach((item) => {
+    ScrollTrigger.create({
+      trigger: item,
+      start: 'top 60%',
+      onEnter: () => item.setAttribute('data-active', ''),
+      onLeaveBack: () => item.removeAttribute('data-active'),
+    });
+
+    const card = item.querySelector<HTMLElement>('[data-roadmap-card]')!;
+    // Slide in from its side on desktop; on mobile rise from below (a sideways offset would overflow the viewport)
+    const from = desktop.matches ? { x: card.dataset.side === 'right' ? 48 : -48, y: 0 } : { x: 0, y: 24 };
+    gsap.fromTo(
+      card,
+      { autoAlpha: 0, ...from },
+      {
+        autoAlpha: 1,
+        x: 0,
+        y: 0,
+        duration: 1,
+        ease: 'expo.out',
+        scrollTrigger: { trigger: item, start: 'top 85%', once: true },
+      },
+    );
+  });
 
   /* ---------- Section reveals ---------- */
   ScrollTrigger.batch('[data-reveal]', {

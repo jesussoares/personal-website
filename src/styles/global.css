@@ -64,14 +64,31 @@ body {
   visibility: hidden;
 }
 
+/* ---------- Experience roadmap ---------- */
+.roadmap-track {
+  background: repeating-linear-gradient(to bottom, var(--line) 0 6px, transparent 6px 12px);
+}
+
+@keyframes node-burst {
+  from { transform: scale(1); opacity: 0.8; }
+  to { transform: scale(2.8); opacity: 0; }
+}
+
 /* ---------- Reveal ---------- */
-.js [data-reveal] {
+.js [data-reveal],
+.js [data-roadmap-card] {
   opacity: 0;
   transform: translateY(20px);
 }
 
+.js [data-roadmap-fill] {
+  transform: scaleY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .js [data-reveal] {
+  .js [data-reveal],
+  .js [data-roadmap-card],
+  .js [data-roadmap-fill] {
     opacity: 1;
     transform: none;
   }
