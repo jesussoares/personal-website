@@ -3,6 +3,7 @@ import Section from '../ui/Section.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import Button from '../ui/Button.astro';
 import Glow from '../ui/Glow.astro';
+import EmailPill from '../ui/EmailPill.astro';
 import { t, type Lang } from '../../i18n/ui';
 import { profile } from '../../data/profile';
 
@@ -26,11 +27,13 @@ const socials = [
       <SectionHeading label={copy.label} title={copy.title} description={copy.text} reveal={false} class="" />
 
       <div class="mt-10 flex flex-wrap items-center gap-3">
-        <Button href={`mailto:${profile.email}`} class="break-all">{profile.email}</Button>
-        <Button variant="subtle" data-copy-email={profile.email} data-copied-label={copy.copied}>
-          {copy.copy}
+        <EmailPill email={profile.email} sendLabel={copy.send} copyLabel={copy.copy} copiedLabel={copy.copied} />
+        <Button href={profile.resume[lang]} variant="subtle" download>
+          {copy.resume}
+          <svg class="size-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19h14"></path>
+          </svg>
         </Button>
-        <Button href={profile.resume[lang]} variant="subtle" download>{copy.resume}</Button>
       </div>
     </div>
   </div>

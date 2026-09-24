@@ -1,0 +1,49 @@
+---
+interface Props {
+  email: string;
+  /** Accessible labels / tooltip text */
+  sendLabel: string;
+  copyLabel: string;
+  copiedLabel: string;
+}
+
+const { email, sendLabel, copyLabel, copiedLabel } = Astro.props;
+---
+
+<!-- One pill: the address opens the mail client, the icon on the right copies it (see scripts/motion.ts) -->
+<div class="inline-flex max-w-full items-stretch rounded-full bg-ink text-sm font-medium text-white">
+  <a
+    href={`mailto:${email}`}
+    title={sendLabel}
+    class="flex min-w-0 items-center gap-2.5 rounded-l-full py-3 pr-4 pl-5 transition-opacity hover:opacity-80"
+  >
+    <svg class="size-4 shrink-0 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+      <path d="m3 7 9 6 9-6"></path>
+    </svg>
+    <span class="truncate">{email}</span>
+  </a>
+  <span class="my-2.5 w-px bg-white/20" aria-hidden="true"></span>
+  <button
+    type="button"
+    data-copy-email={email}
+    aria-label={copyLabel}
+    title={copyLabel}
+    class="group/copy relative grid place-items-center rounded-r-full pr-4 pl-3 transition-opacity hover:opacity-80"
+  >
+    <!-- copy icon, swapped for a check while data-copied is set -->
+    <svg class="size-4 group-data-[copied]/copy:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+      <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+    </svg>
+    <svg class="hidden size-4 text-emerald-400 group-data-[copied]/copy:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m5 12 5 5 9-10"></path>
+    </svg>
+    <span
+      role="status"
+      class="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 rounded-full bg-ink px-2.5 py-1 text-xs whitespace-nowrap text-white opacity-0 transition-opacity group-data-[copied]/copy:opacity-100"
+    >
+      <span class="hidden group-data-[copied]/copy:inline">{copiedLabel}</span>
+    </span>
+  </button>
+</div>

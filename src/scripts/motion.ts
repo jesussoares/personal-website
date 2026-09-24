@@ -30,13 +30,15 @@ document.querySelectorAll<HTMLElement>('[data-spotlight]').forEach((el) => {
 });
 
 /* ---------- Copy email ---------- */
+// Sets data-copied briefly; the button's styles swap the icon and show the "copied" tooltip
 document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((button) => {
-  const original = button.textContent;
+  let timer: number | undefined;
   button.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(button.dataset.copyEmail!);
-      button.textContent = `${button.dataset.copiedLabel} ✓`;
-      setTimeout(() => (button.textContent = original), 1800);
+      button.dataset.copied = '';
+      clearTimeout(timer);
+      timer = window.setTimeout(() => delete button.dataset.copied, 1800);
     } catch {}
   });
 });
